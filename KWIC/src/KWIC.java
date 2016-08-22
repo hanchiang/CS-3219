@@ -68,7 +68,8 @@ public class KWIC {
 	
 	public static void printResult() {
 		for (String line : output) {
-			System.out.println(line);
+			System.out.println(line.substring(0, 1).toUpperCase() +
+					line.substring(1));
 		}
 	}
 }

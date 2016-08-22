@@ -115,7 +115,8 @@ public class KWIC2 {
 	
 	public void printResult() {
 		for (String line : result) {
-			System.out.println(line);
+			System.out.println(line.substring(0, 1).toUpperCase() +
+					line.substring(1));
 		}
 	}
 }
