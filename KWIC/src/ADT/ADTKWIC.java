@@ -173,6 +173,21 @@ class Output {
 			e.printStackTrace();
 		}
 	}
+	//print first 20 items in the result
+	public void printResult() {
+		System.out.println("*****************RESULT*******************");
+		int n = 1;
+		for (String line : output) {
+			if (n == 21) {
+				System.out.println("Only first 20 items in the result in alphabetical order"
+						+ " are shown.\nPlease refer to output.txt for full result");
+				break;
+			}
+			System.out.println(n +". " + line.substring(0, 1).toUpperCase() +
+					line.substring(1));
+			n++;
+		}
+	}
 }
 
 // class containing methods to run ADT KWIC
@@ -185,6 +200,7 @@ public class ADTKWIC {
 		Output out = new Output(cs);
 		out.alphabetize();
 		out.writeToFile();
+		out.printResult();
 		
 		System.out.println("Results are written to output.txt!");
 	}
