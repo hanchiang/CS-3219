@@ -29,6 +29,7 @@ public class SharedDataKWIC {
 		circularShift();
 		alphabetize();
 		writeToFile();
+		printResult();
 		System.out.println("Results are written to output.txt!");
 	}
 
@@ -164,7 +165,7 @@ public class SharedDataKWIC {
 		return inputList;
 	}
 	//print first 20 items in the result
-	public void printResult() {
+	public static void printResult() {
 		System.out.println("*****************RESULT*******************");
 		int n = 1;
 		for (String line : output) {
