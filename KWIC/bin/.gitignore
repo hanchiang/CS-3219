@@ -1,4 +1,3 @@
-/ADT/
 /CircularShift.class
 /InputReader.class
 /KWIC.class
@@ -6,3 +5,4 @@
 /Main.class
 /Output.class
 /sharedData/
+/ADT/
