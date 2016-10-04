@@ -1,0 +1,1620 @@
+<h1>Introduction to D3.js</h1>
+<h2><a id="user-content-introduction" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#introduction"></a>Introduction</h2>
+<p>D3.js is a JavaScript library for manipulating documents based on data. D3 helps you bring data to life using HTML, SVG and CSS. D3&rsquo;s emphasis on web standards gives you the full capabilities of modern browsers without tying yourself to a proprietary framework, combining powerful visualization components and a data-driven approach to DOM manipulation.</p>
+<h2><a id="user-content-lab-assets" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#lab-assets"></a>Lab Assets</h2>
+<p>These are the assets that are given to you together with this labsheet.</p>
+<pre><code>lab5/
+    javascripts/
+        d3.min.js
+        jquery.min.js
+        task3.js
+    css/
+        task1.css
+        task3.css
+    task1.html
+    task2.html
+    task3.html
+</code></pre>
+<p>The <code>javascript</code> folder contains both the <code>d3</code> and <code>jquery</code> libraries. <code>d3</code> is essential for all the tasks. <code>jquery</code> is essential for task 3 only.</p>
+<h2><a id="user-content-task-1-a-donut-chart" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#task-1-a-donut-chart"></a>Task 1: A Donut Chart</h2>
+<h4>Making a donut chart using D3 is pretty easy. We assume that you are familiar with drawing &nbsp;different shapes on a static web page using <code>&lt;svg&gt;</code>. For example, you may draw a circle using following markup:<br /><a id="user-content-previously-in-cs3240-lab" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#previously-in-cs3240-lab"></a></h4>
+<pre><code>&lt;svg width="500" height="500" style="border:1px solid black;"&gt;
+    &lt;circle cx="50" cy="100" r="25" fill="green"/&gt;
+&lt;/svg&gt;
+</code></pre>
+<p>The markup above creates a 500px x 500px canvas with black border. Within the canvas, it draws a green color circle with radius of 25px. The circle resides at point (100, 25) on the canvas. It looks something like this:</p>
+<p><a href="https://camo.githubusercontent.com/022e4616fd53eaf3aa4a0a0cc2c73233fd22b1b4/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d7a71676b4a7942516675492f56514641533055793851492f414141414141414141504d2f4e613831503049426f46552f733530302f312e706e67" target="_blank"><img title="1.png" src="https://camo.githubusercontent.com/022e4616fd53eaf3aa4a0a0cc2c73233fd22b1b4/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d7a71676b4a7942516675492f56514641533055793851492f414141414141414141504d2f4e613831503049426f46552f733530302f312e706e67" alt="enter image description here" data-canonical-src="https://lh3.googleusercontent.com/-zqgkJyBQfuI/VQFAS0Uy8QI/AAAAAAAAAPM/Na81P0IBoFU/s500/1.png" /></a></p>
+<h4><a id="user-content-why-d3js" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#why-d3js"></a>Why D3.js?</h4>
+<p>HTML5 allows us to "draw" on a web page easily, however, it will be extremely tedious if we have to use markup language to create such shapes all the time. A data visualization diagram sometimes involves hundreds or even thousands of shapes and paths. To make things worse, the data are usually dynamic - they change over time.</p>
+<p>Why not generate them using JavaScript? That's what D3 is made for. It is designed to help us to create complex graphs - such as a bar chart of Singapore's fertility rate in the 21st century.</p>
+<p>At the end of the this task, you will be able to make following graph using D3.</p>
+<p><a href="https://camo.githubusercontent.com/3edf33514941082ed55ad59e41e016a05a9e054f/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d585a4574525079514550592f564d5f41654f486e6a39492f4141414141414141414f452f4a5a4f64504974636465452f733530302f7461736b312e706e67" target="_blank"><img title="task1.png" src="https://camo.githubusercontent.com/3edf33514941082ed55ad59e41e016a05a9e054f/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d585a4574525079514550592f564d5f41654f486e6a39492f4141414141414141414f452f4a5a4f64504974636465452f733530302f7461736b312e706e67" alt="enter image description here" data-canonical-src="https://lh3.googleusercontent.com/-XZEtRPyQEPY/VM_AeOHnj9I/AAAAAAAAAOE/JZOdPItcdeE/s500/task1.png" /></a></p>
+<h4><a id="user-content-prelude" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#prelude"></a>Prelude</h4>
+<p>As D3 is a web-based data visualization library, we will need to have a web page before drawing anything with D3.</p>
+<p><code>task1.html</code> is an empty web page skeleton. To inlcude D3, you need to include following code within the <code>&lt;head&gt;...&lt;/head&gt;</code></p>
+<pre><code>&lt;script src="./javascripts/d3.min.js"&gt;&lt;/script&gt;
+</code></pre>
+<p>The completed code:</p>
+<pre><code>&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt; D3 Tutorial &lt;/title&gt;
+        &lt;script src="./javascripts/d3.min.js"&gt;&lt;/script&gt;
+        &lt;link rel="stylesheet" type="text/css" href="./css/task1.css"&gt;
+        &lt;script&gt;
+            // Some javascript code
+        &lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h4><a id="user-content-know-your-data" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#know-your-data"></a>Know your data</h4>
+<p>Before we get our hands dirty, let's think about the requirements - What kind of donuts chart are we creating? How many segments? What is the color of each segment? How big is the donut chart? What is the outer radius and inner radius of the donut?</p>
+<p>How about this?</p>
+<table>
+<thead>
+<tr><th>Property</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Segments</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Color</td>
+<td>red, blue, orange</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>10, 50, 80</td>
+</tr>
+<tr>
+<td>Inner Radius</td>
+<td>200</td>
+</tr>
+<tr>
+<td>Outer Radius</td>
+<td>300</td>
+</tr>
+</tbody>
+</table>
+<p>In JavaScript:</p>
+<pre><code>var color = ["red", "blue", "orange"];
+var data = [10, 50, 80];
+var innerRadius = 200;
+var outerRadius = 300;
+</code></pre>
+<p>Hence we have:</p>
+<pre><code>&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt; D3 Tutorial &lt;/title&gt;
+        &lt;script src="./javascripts/d3.min.js"&gt;&lt;/script&gt;
+        &lt;link rel="stylesheet" type="text/css" href="./css/task1.css"&gt;
+        &lt;script&gt;
+            var color = ["red", "blue", "orange"];
+            var data = [10, 50, 80];
+            var innerRadius = 200;
+            var outerRadius = 300;
+        &lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h4><a id="user-content-create-a-canvas" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#create-a-canvas"></a>Create a canvas</h4>
+<p>All shapes are drawn on canvas. Therefore, we have to create a canvas object in javascript.</p>
+<pre><code>var canvas = d3.select("body").append("svg")
+            .attr("width", 600)
+            .attr("height", 600);
+</code></pre>
+<p><code>d3.select("body")</code> will select the <code>&lt;body&gt;</code> container in the DOM. The method <code>.append("svg")</code> will create an <code>&lt;svg&gt;&lt;/svg&gt;</code> element within the <code>&lt;body&gt;</code>. <code>.attr()</code> specifies the properties (height and width) of the <code>&lt;svg&gt;</code> element.</p>
+<p>To show that the canvas is really on the page, it is styled with a grey border (defined in <code>task1.css</code>). You should be seeing something like this:</p>
+<p><a href="https://camo.githubusercontent.com/b4f6a2e5d8ee2994249c9f853990a603a38f32f6/68747470733a2f2f6c68342e676f6f676c6575736572636f6e74656e742e636f6d2f2d65636c436e614c2d78784d2f56514641634655477a72492f41414141414141414150672f59704f4f487963367068772f733530302f322e706e67" target="_blank"><img title="2.png" src="https://camo.githubusercontent.com/b4f6a2e5d8ee2994249c9f853990a603a38f32f6/68747470733a2f2f6c68342e676f6f676c6575736572636f6e74656e742e636f6d2f2d65636c436e614c2d78784d2f56514641634655477a72492f41414141414141414150672f59704f4f487963367068772f733530302f322e706e67" alt="enter image description here" data-canonical-src="https://lh4.googleusercontent.com/-eclCnaL-xxM/VQFAcFUGzrI/AAAAAAAAAPg/YpOOHyc6phw/s500/2.png" /></a></p>
+<h4><a id="user-content-create-a-group" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#create-a-group"></a>Create a group</h4>
+<p>A group is a container of multiple DOM elements. As we are going to make a donut chart with multiple segments, it is better for us group all segments together.</p>
+<p>To create a group:</p>
+<pre><code>var group = canvas.append("g")
+                .attr("transform", "translate(300, 300)");
+</code></pre>
+<p><code>translate(300, 300)</code> translates the group towards right by <code>300px</code> and towards bottom by <code>300px</code> so that our donut chart will not appear that the edge of the canvas.</p>
+<p>You won't be able to see any difference at this point of time. However, if you use Developer Tools to inspect element, you will find a <code>&lt;g&gt;&lt;/g&gt;</code> element residing at (300, 300) on the canvas.</p>
+<h4><a id="user-content-building-an-arc-generator" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#building-an-arc-generator"></a>Building an arc generator</h4>
+<p>A donut chart is made of multiple segments. Each segment is an arc. Our arc has an inner radius of <code>200px</code> and outer radius of <code>300px</code>. Let's define an arc generator object. It works like a speical type of brush that only draw arcs with specific radius.</p>
+<pre><code>var arc = d3.svg.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(outerRadius);
+</code></pre>
+<h4><a id="user-content-mapping-our-data-into-arc-properties" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#mapping-our-data-into-arc-properties"></a>Mapping our data into arc properties</h4>
+<p>Donut charts are similar to pie chart. In each segment, its arc angle is proportional to the quantity it represents. To map our data into arc angles, let's use the native pie chart data model in D3, as they work in the same way.</p>
+<pre><code>var pie = d3.layout.pie()
+            .value(function (d) { return d; });
+</code></pre>
+<p><code>d3.layout.pie()</code> specifies the data model that we are using to visualize our data.</p>
+<p>We pass a "do-nothing" function into <code>.value()</code>, as we are not going to process our data any further before visualising it.</p>
+<h4><a id="user-content-creating-the-arcs" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#creating-the-arcs"></a>Creating the arcs</h4>
+<p>How D3 creates new elements may not be intuitive for beginners.</p>
+<p>To create the arcs, we will first build a selector to select all the DOM elements with the class <code>arc</code>. If there are some <code>arc</code> elements in the <code>group</code>, the selector will return those elements.</p>
+<pre><code>var group = canvas.append("g")
+                .attr("transform", "translate(300, 300)");
+
+...
+
+group.selectAll(".arc")
+
+</code></pre>
+<p>We then bind our data with the selector by appending <code>.data(pie(data))</code> after the selector:</p>
+<pre><code>var pie = d3.layout.pie()
+            .value(function (d) { return d; });
+
+...
+
+group.selectAll(".arc").data(pie(data))
+</code></pre>
+<p>And for each data entry, we should create an <code>.arc</code> element as a container:</p>
+<pre><code>var arc = d3.svg.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(outerRadius);
+...
+
+group.selectAll(".arc")
+    .data(pie(data))
+    .enter()
+        .append("g")
+        .attr("class", "arc")
+        .append("path")
+        .attr("d", arc);
+
+</code></pre>
+<p><code>.enter()</code> means that as long as there is an unused data entry, D3 will create an <code>&lt;g class="arc"&gt;&lt;/g&gt;</code>. A <code>&lt;path&gt;&lt;/path&gt;</code> will be created in each <code>&lt;g class="arc"&gt;&lt;/g&gt;</code>, using the <code>arc</code> generator that we defined earlier.</p>
+<p>You will see something like this:</p>
+<p><a href="https://camo.githubusercontent.com/e70aac5299b77345563440a41af7d3cc66df64c9/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d6a3471727141684b4933732f56514647555f44574744492f41414141414141414150382f573258544458504e4e716b2f733530302f332e706e67" target="_blank"><img title="3.png" src="https://camo.githubusercontent.com/e70aac5299b77345563440a41af7d3cc66df64c9/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d6a3471727141684b4933732f56514647555f44574744492f41414141414141414150382f573258544458504e4e716b2f733530302f332e706e67" alt="enter image description here" data-canonical-src="https://lh3.googleusercontent.com/-j4qrqAhKI3s/VQFGU_DWGDI/AAAAAAAAAP8/W2XTDXPNNqk/s500/3.png" /></a></p>
+<p>Lastly, let's use different colors to represent different segments.</p>
+<p><code>ordinal()</code> means that color will be determined by order.</p>
+<p><code>color</code> is a function that takes in data value and returns a corresponding color.</p>
+<pre><code>var color = d3.scale.ordinal()
+                .range(["red", "blue", "orange"])
+...
+
+group.selectAll(".arc")
+    .data(pie(data))
+    .enter()
+        .append("g")
+        .attr("class", "arc")
+        .append("path")
+        .attr("d", arc);
+        .attr("fill", function (d) { return color(d.data) })
+
+</code></pre>
+<h4><a id="user-content-task-1-mission-complete" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#task-1-mission-complete"></a>Task 1: Mission Complete</h4>
+<p><a href="https://camo.githubusercontent.com/3edf33514941082ed55ad59e41e016a05a9e054f/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d585a4574525079514550592f564d5f41654f486e6a39492f4141414141414141414f452f4a5a4f64504974636465452f733530302f7461736b312e706e67" target="_blank"><img title="task1.png" src="https://camo.githubusercontent.com/3edf33514941082ed55ad59e41e016a05a9e054f/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d585a4574525079514550592f564d5f41654f486e6a39492f4141414141414141414f452f4a5a4f64504974636465452f733530302f7461736b312e706e67" alt="enter image description here" data-canonical-src="https://lh3.googleusercontent.com/-XZEtRPyQEPY/VM_AeOHnj9I/AAAAAAAAAOE/JZOdPItcdeE/s500/task1.png" /></a></p>
+<p>This is the completed code for creating a donut chart using D3.</p>
+<pre><code>&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt; D3 Tutorial &lt;/title&gt;
+        &lt;script src="./javascripts/d3.min.js"&gt;&lt;/script&gt;
+        &lt;link rel="stylesheet" type="text/css" href="./css/task1.css"&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;script&gt;
+            var color = ["red", "blue", "orange"];
+            var data = [10, 50, 80];
+            var innerRadius = 200;
+            var outerRadius = 300;
+
+            var canvas = d3.select("body").append("svg")
+                        .attr("width", 600)
+                        .attr("height", 600);
+
+            var group = canvas.append("g")
+                        .attr("transform", "translate(300, 300)");
+
+            var arc = d3.svg.arc()
+                    .innerRadius(innerRadius)
+                    .outerRadius(outerRadius);
+
+            var pie = d3.layout.pie()
+                    .value(function (d) { return d; });
+
+            group.selectAll(".arc")
+                .data(pie(data))
+                .enter()
+                    .append("g")
+                    .attr("class", "arc");
+                    .append("path")
+                    .attr("d", arc)
+                    .attr("fill", function (d) { return color(d.data) })
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h2><a id="user-content-task-2-bar-chart-with-axis" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#task-2-bar-chart-with-axis"></a>Task 2: Bar Chart with Axis</h2>
+<h4><a id="user-content-prelude-1" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#prelude-1"></a>Prelude</h4>
+<p>As you have learnt how to make a dount chart using D3.js, you may wonder how to draw axes in your visualizations - for example, in a bar chart.</p>
+<p><a href="https://camo.githubusercontent.com/eefca2630ef392f4abfc3ea2a1e511d4140d93d5/68747470733a2f2f6c68352e676f6f676c6575736572636f6e74656e742e636f6d2f2d4f6848315432594b7239512f564d5f41784871646156492f4141414141414141414f592f696b776e5732656b7a42412f733530302f7461736b322e706e67" target="_blank"><img title="task2.png" src="https://camo.githubusercontent.com/eefca2630ef392f4abfc3ea2a1e511d4140d93d5/68747470733a2f2f6c68352e676f6f676c6575736572636f6e74656e742e636f6d2f2d4f6848315432594b7239512f564d5f41784871646156492f4141414141414141414f592f696b776e5732656b7a42412f733530302f7461736b322e706e67" alt="enter image description here" data-canonical-src="https://lh5.googleusercontent.com/-OhH1T2YKr9Q/VM_AxHqdaVI/AAAAAAAAAOY/ikwnW2ekzBA/s500/task2.png" /></a></p>
+<p>In this task, we will be modifying <code>task2.html</code>.</p>
+<p><code>task2.html</code> is no different from <code>task1.html</code>, except that <code>d3.js</code> has already been included and there is no additional CSS to be loaded.</p>
+<pre><code>
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt; D3 Tutorial &lt;/title&gt;
+        &lt;script src="./javascripts/d3.min.js"&gt;&lt;/script&gt;
+        &lt;script&gt;
+            // write your code here
+        &lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre>
+<h4><a id="user-content-draw-a-bar-chart" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#draw-a-bar-chart"></a>Draw a bar chart</h4>
+<p>Drawing a bar chart is pretty similar to drawing a donut chart. In fact, it is much easier.</p>
+<p>Firstly, let's define the data and the canvas size.</p>
+<pre><code>var dataArray = [20, 40, 50, 60];
+var width = 500;
+var height = 500;
+
+</code></pre>
+<p>Then, we should set the maximum and minimum length of the bar. The following code sets the maximum length of the bar to be as same as the width of the canvas.</p>
+<p><code>.domain([0, 60])</code> declares that the domain of the graph will be from 0 to 60.</p>
+<p><code>.range([0, width])</code> declares that the actual length of each bar will be between 0 to the width of the canvas (500). That means that a bar that represents data value of 60 will be 500px long.</p>
+<p><code>.scale.linear()</code> means that the length of each bar will be linearly propotional to the data value.</p>
+<pre><code>var widthScale = d3.scale.linear()
+                .domain([0, 60])
+                .range([0, width]);
+</code></pre>
+<p>After defining the scale, let's define the color. The color of each bar is linearly proportional to the data. A bar will appear more bluish if it has a larger corresponding value.</p>
+<pre><code>var color = d3.scale.linear()
+            .domain([0, 60])
+            .range(["red", "blue"]);
+</code></pre>
+<p>Lastly, let's create the canvas and draw each bar using following code.</p>
+<pre><code>var canvas = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(20, 0)");
+
+
+var bars = canvas.selectAll("rect")
+            .data(dataArray)
+            .enter()
+                .append("rect")
+                .attr("width", function (d) { return widthScale(d); })
+                .attr("height", 50)
+                .attr("fill", function (d) { return color(d) })
+                .attr("y", function(d, i) { return i * 100; });
+</code></pre>
+<p>That completes the code for drawing a bar chart.</p>
+<p><a href="https://camo.githubusercontent.com/f7fb26f73a485567c8b69aa6a04ca0763f02eb01/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d38685830626964313637452f565147774e3932435251492f41414141414141414151552f58413450533259346b6b342f733530302f342e706e67" target="_blank"><img title="4.png" src="https://camo.githubusercontent.com/f7fb26f73a485567c8b69aa6a04ca0763f02eb01/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d38685830626964313637452f565147774e3932435251492f41414141414141414151552f58413450533259346b6b342f733530302f342e706e67" alt="enter image description here" data-canonical-src="https://lh3.googleusercontent.com/-8hX0bid167E/VQGwN92CRQI/AAAAAAAAAQU/XA4PS2Y4kk4/s500/4.png" /></a></p>
+<h4><a id="user-content-appending-an-axis" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#appending-an-axis"></a>Appending an Axis</h4>
+<p>The bar chart that you have drawn looks nice. However, there is still one thing missing - The Axis.</p>
+<p>Firstly, Let's create an axis generator by calling <code>d3.svg.axis()</code>.</p>
+<pre><code>var axis = d3.svg.axis()
+            .ticks(5)
+            .scale(widthScale);
+</code></pre>
+<p><code>ticks(5)</code> defines the number of ticks in the axis. In this case, we will have 5 ticks, representing 10, 20, 30, 40, 50.</p>
+<p>The scale of ticks is set to be as same as the <code>widthScale</code> that we defined previously</p>
+<p>To make the axis appear, we have to append the axis into the canvas, and place it below the bars that we have drawn earlier.</p>
+<pre><code>canvas.append("g")
+    .attr("transform", "translate(0, 400)")
+    .call(axis);
+</code></pre>
+<h4><a id="user-content-task-2-mission-complete" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#task-2-mission-complete"></a>Task 2: Mission Complete</h4>
+<p>This is the completed code for creating a bar chart with axis using D3</p>
+<p><a href="https://camo.githubusercontent.com/eefca2630ef392f4abfc3ea2a1e511d4140d93d5/68747470733a2f2f6c68352e676f6f676c6575736572636f6e74656e742e636f6d2f2d4f6848315432594b7239512f564d5f41784871646156492f4141414141414141414f592f696b776e5732656b7a42412f733530302f7461736b322e706e67" target="_blank"><img title="task2.png" src="https://camo.githubusercontent.com/eefca2630ef392f4abfc3ea2a1e511d4140d93d5/68747470733a2f2f6c68352e676f6f676c6575736572636f6e74656e742e636f6d2f2d4f6848315432594b7239512f564d5f41784871646156492f4141414141414141414f592f696b776e5732656b7a42412f733530302f7461736b322e706e67" alt="enter image description here" data-canonical-src="https://lh5.googleusercontent.com/-OhH1T2YKr9Q/VM_AxHqdaVI/AAAAAAAAAOY/ikwnW2ekzBA/s500/task2.png" /></a></p>
+<pre><code>&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt; D3 Tutorial &lt;/title&gt;
+        &lt;script src="./d3.js"&gt;&lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+
+        &lt;script&gt;
+
+            var dataArray = [20, 40, 50, 60];
+            var width = 500;
+            var height = 500;
+
+            var widthScale = d3.scale.linear()
+                            .domain([0, 60])
+                            .range([0, width]);
+
+            var color = d3.scale.linear()
+                        .domain([0, 60])
+                        .range(["red", "blue"]);
+
+            var axis = d3.svg.axis()
+                        .ticks(5)
+                        .scale(widthScale);
+
+            var canvas = d3.select("body")
+                        .append("svg")
+                        .attr("width", width)
+                        .attr("height", height)
+                        .append("g")
+                        .attr("transform", "translate(20, 0)");
+
+
+            var bars = canvas.selectAll("rect")
+                        .data(dataArray)
+                        .enter()
+                            .append("rect")
+                            .attr("width", function (d) { return widthScale(d); })
+                            .attr("height", 50)
+                            .attr("fill", function (d) { return color(d) })
+                            .attr("y", function(d, i) { return i * 100; });
+
+            canvas.append("g")
+                .attr("transform", "translate(0, 400)")
+                .call(axis);
+
+        &lt;/script&gt;
+    &lt;/body&gt;
+
+&lt;/html&gt;
+</code></pre>
+<h2><a id="user-content-task-3-build-an-interactive-visualization" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#task-3-build-an-interactive-visualization"></a>Task 3: Build an interactive visualization</h2>
+<h4><a id="user-content-prelude-2" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#prelude-2"></a>Prelude</h4>
+<p>A chord diagram is a graphical method of displaying the inter-relationships between data in a matrix. The data is arranged radially around a circle with the relationships between the points typically drawn as arcs connecting the data together.</p>
+<p>Example of a chord diagram</p>
+<p><a href="https://camo.githubusercontent.com/b7094cdb0abb80310a5351a26cbeca2a9291359a/687474703a2f2f63646e2e626f6f6d6265702e6e6c2f66696c65732f35653766372d30366366302d63686f7264312e6a7067" target="_blank"><img src="https://camo.githubusercontent.com/b7094cdb0abb80310a5351a26cbeca2a9291359a/687474703a2f2f63646e2e626f6f6d6265702e6e6c2f66696c65732f35653766372d30366366302d63686f7264312e6a7067" alt="Example of a chord diagram" data-canonical-src="http://cdn.boombep.nl/files/5e7f7-06cf0-chord1.jpg" /></a></p>
+<p>In this Task, we are going to make an interactive chord diagram. Here is the snapshot of this chord diagram</p>
+<p><a href="https://camo.githubusercontent.com/8264dadd94f1e898dc34dc94210b37f3909f3ab2/68747470733a2f2f6c68352e676f6f676c6575736572636f6e74656e742e636f6d2f2d792d306751755a457845512f5651477a555635695945492f41414141414141414151732f62676736385564666b484d2f733530302f352e706e67" target="_blank"><img title="5.png" src="https://camo.githubusercontent.com/8264dadd94f1e898dc34dc94210b37f3909f3ab2/68747470733a2f2f6c68352e676f6f676c6575736572636f6e74656e742e636f6d2f2d792d306751755a457845512f5651477a555635695945492f41414141414141414151732f62676736385564666b484d2f733530302f352e706e67" alt="enter image description here" data-canonical-src="https://lh5.googleusercontent.com/-y-0gQuZExEQ/VQGzUV5iYEI/AAAAAAAAAQs/bgg68UdfkHM/s500/5.png" /></a></p>
+<p>When you hover on one of the external arcs, its connecting chords are highlighted to show the relationship between different arcs.</p>
+<p><a href="https://camo.githubusercontent.com/a4eeeeb3364be030ce8b321bbd4eeb58ded46e76/68747470733a2f2f6c68342e676f6f676c6575736572636f6e74656e742e636f6d2f2d64472d57447435766c4d4d2f5651477a63414b756a48492f41414141414141414152412f78785a74596b4b516251342f733530302f362e706e67" target="_blank"><img title="6.png" src="https://camo.githubusercontent.com/a4eeeeb3364be030ce8b321bbd4eeb58ded46e76/68747470733a2f2f6c68342e676f6f676c6575736572636f6e74656e742e636f6d2f2d64472d57447435766c4d4d2f5651477a63414b756a48492f41414141414141414152412f78785a74596b4b516251342f733530302f362e706e67" alt="enter image description here" data-canonical-src="https://lh4.googleusercontent.com/-dG-WDt5vlMM/VQGzcAKujHI/AAAAAAAAARA/xxZtYkKQbQ4/s500/6.png" /></a></p>
+<p>It also includes some storytelling component to guide user through the interactive experience.</p>
+<p><a href="https://camo.githubusercontent.com/be451f448f15fed4ca9d455f9ffc58b8832a90dd/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d4d6c4961622d49345f6a772f5651477a6b6c4d4c5462492f41414141414141414152552f36364f37635770614b4b302f733530302f372e706e67" target="_blank"><img title="7.png" src="https://camo.githubusercontent.com/be451f448f15fed4ca9d455f9ffc58b8832a90dd/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d4d6c4961622d49345f6a772f5651477a6b6c4d4c5462492f41414141414141414152552f36364f37635770614b4b302f733530302f372e706e67" alt="enter image description here" data-canonical-src="https://lh3.googleusercontent.com/-MlIab-I4_jw/VQGzklMLTbI/AAAAAAAAARU/66O7cWpaKK0/s500/7.png" /></a></p>
+<p>The completed visualization can be accessed using following link:</p>
+<p><a href="http://bl.ocks.org/nbremer/raw/94db779237655907b907/">http://bl.ocks.org/nbremer/raw/94db779237655907b907/</a></p>
+<p>A basic HTML page has been made for you in <code>task3.html</code>. You are only required to modify <code>task3.js</code>.</p>
+<h4><a id="user-content-know-your-data-1" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#know-your-data-1"></a>Know your data</h4>
+<p>In a Global Mobile Consumer Survey, 2000 residents of the Netherlands were surveyed about their mobile phone behaviour. The respondents gave them information about the brand of their current main phone, and the brand of their previous main phone.</p>
+<table>
+<thead>
+<tr><th>Currrent</th><th>Apple</th><th>HTC</th><th>Huawei</th><th>LG</th><th>Nokia</th><th>Samsung</th><th>Sony</th><th>Other</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Apple</td>
+<td>9.6899%</td>
+<td>0.8859%</td>
+<td>0.0554%</td>
+<td>0.443%</td>
+<td>2.5471%</td>
+<td>2.4363%</td>
+<td>0.5537%</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>HTC</td>
+<td>0.1107%</td>
+<td>1.8272%</td>
+<td>0%</td>
+<td>0.4983%</td>
+<td>1.1074%</td>
+<td>1.052%</td>
+<td>0.2215%</td>
+<td>0.4983%</td>
+</tr>
+<tr>
+<td>Huawei</td>
+<td>0.0554%</td>
+<td>0.2769%</td>
+<td>0.2215%</td>
+<td>0.2215%</td>
+<td>0.3876%</td>
+<td>0.8306%</td>
+<td>0.0554%</td>
+<td>0.3322</td>
+</tr>
+<tr>
+<td>LG</td>
+<td>0.0554%</td>
+<td>0.1107%</td>
+<td>0.0554%</td>
+<td>1.2182%</td>
+<td>1.1628%</td>
+<td>0.6645%</td>
+<td>0.4983%</td>
+<td>1.052%</td>
+</tr>
+<tr>
+<td>Nokia</td>
+<td>0.2215%</td>
+<td>0.443%</td>
+<td>0%</td>
+<td>0.2769%</td>
+<td>10.4097%</td>
+<td>1.2182%</td>
+<td>0.4983%</td>
+<td>2.8239%</td>
+</tr>
+<tr>
+<td>Samsung</td>
+<td>1.1628%</td>
+<td>2.6024%</td>
+<td>0%</td>
+<td>1.3843%</td>
+<td>8.7486%</td>
+<td>16.8328%</td>
+<td>1.7165%</td>
+<td>5.5925%</td>
+</tr>
+<tr>
+<td>Sony</td>
+<td>0.0554%</td>
+<td>0.4983%</td>
+<td>0%</td>
+<td>0.3322%</td>
+<td>0.443%</td>
+<td>0.8859%</td>
+<td>1.7719%</td>
+<td>0.443%</td>
+</tr>
+<tr>
+<td>Other</td>
+<td>0.2215%</td>
+<td>0.7198%</td>
+<td>0%</td>
+<td>0.3322%</td>
+<td>1.6611%</td>
+<td>1.495%</td>
+<td>0.1107%</td>
+<td>5.4264%</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Row 1 is the brand of their previous main phone</li>
+<li>Column 1 is the brand of their current main phone.</li>
+<li>For example, in cell (Nokia, Apple), the percentage value is 0.2215%. That means that 2.5471% of the respondents switched from Nokia to Apple.</li>
+</ul>
+<p>Let's put the table data into two variables. One stores the names of the phone brands. The other stores the actual data. We also have another array that defines the group of colors that we will be using in our graph.</p>
+<pre><code>var NameProvider = ["Apple","HTC","Huawei","LG","Nokia","Samsung","Sony","Other"];
+
+var matrix = [
+[9.6899,0.8859,0.0554,0.443,2.5471,2.4363,0.5537,2.5471], //  Apple 19.1584
+[0.1107,1.8272,0,0.4983,1.1074,1.052,0.2215,0.4983], //  HTC 5.3154
+[0.0554,0.2769,0.2215,0.2215,0.3876,0.8306,0.0554,0.3322], //  Huawei 2.3811
+[0.0554,0.1107,0.0554,1.2182,1.1628,0.6645,0.4983,1.052], //  LG 4.8173
+[0.2215,0.443,0,0.2769,10.4097,1.2182,0.4983,2.8239], //  Nokia 15.8915
+[1.1628,2.6024,0,1.3843,8.7486,16.8328,1.7165,5.5925], //  Samsung 38.0399
+[0.0554,0.4983,0,0.3322,0.443,0.8859,1.7719,0.443], //  Sony 4.4297
+[0.2215,0.7198,0,0.3322,1.6611,1.495,0.1107,5.4264] //  Other 9.9667
+];
+
+//  Sums up to exactly 100
+
+var colors = ["#C4C4C4","#69B40F","#EC1D25","#C8125C","#008FC8","#10218B","#134B24","#737373"];
+
+
+</code></pre>
+<p>Then, we have to initialise the colour scale. The following code binds each color with a phone brand. For example, all data related to Apple will be using <code>"#C4C4C4"</code>.</p>
+<pre><code>// Initialize the colour scale
+var fill = d3.scale.ordinal()
+    .domain(d3.range(NameProvider.length))
+    .range(colors);
+
+</code></pre>
+<h4><a id="user-content-create-the-canvas-and-initialise-the-generators" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#create-the-canvas-and-initialise-the-generators"></a>Create the canvas and initialise the generators.</h4>
+<p>After setting up the data, we need to create our canvas. We firstly define some constants that we are going to use later.</p>
+<pre><code>var width = 650,
+    height = 600,
+    hPad = 20
+    innerRadius = Math.min(width, height) * .39,
+    outerRadius = innerRadius * 1.04;
+</code></pre>
+<p>Our graph will be contained inside a <code>&lt;svg&gt;</code> element. The following code appends the <code>&lt;svg&gt;</code> element inside <code>&lt;div id="chart"&gt;&lt;/div&gt;</code>. It also defines the width and height of the canvas.</p>
+<pre><code>// Initialize the SVG
+var svg = d3.select("#chart").append("svg:svg")
+    .attr("width", width+50)
+    .attr("height", height+20)
+    .append("svg:g")
+    .attr("transform", "translate(" + width / 2 + "," + (height / 2 + hPad) + ")");
+</code></pre>
+<p>We also need to initialize a chord generator. The generator will be used later to draw various chords. <code>.matrix(matrix)</code> will allow the chord generator to use the data from the <code>matrix</code> variable that we defined earlier.</p>
+<pre><code>var chord = d3.layout.chord()
+    .padding(.04)
+    .sortSubgroups(d3.descending) // Sort the chords inside an arc from high to low
+    .sortChords(d3.descending) // Which chord should be shown on top when chords cross. Now the biggest chord is at the bottom
+    .matrix(matrix);
+</code></pre>
+<p>Last but not the least, we need to have an arc generator. It will be used to create external arcs.</p>
+<pre><code>var arc = d3.svg.arc()
+    .innerRadius(innerRadius)
+    .outerRadius(outerRadius);
+
+</code></pre>
+<h4><a id="user-content-draw-arcs" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#draw-arcs"></a>Draw Arcs</h4>
+<p>So far, what you can see is a plain canvas with a button and two links on it.</p>
+<p><a href="https://camo.githubusercontent.com/57c303d21aac6960b2da0a57d36b53e84a821183/68747470733a2f2f6c68362e676f6f676c6575736572636f6e74656e742e636f6d2f2d6c7239744779594c7133672f5651473874546b62494a492f41414141414141414152772f7748665a6f372d377447732f733530302f382e706e67" target="_blank"><img title="8.png" src="https://camo.githubusercontent.com/57c303d21aac6960b2da0a57d36b53e84a821183/68747470733a2f2f6c68362e676f6f676c6575736572636f6e74656e742e636f6d2f2d6c7239744779594c7133672f5651473874546b62494a492f41414141414141414152772f7748665a6f372d377447732f733530302f382e706e67" alt="enter image description here" data-canonical-src="https://lh6.googleusercontent.com/-lr9tGyYLq3g/VQG8tTkbIJI/AAAAAAAAARw/wHfZo7-7tGs/s500/8.png" /></a></p>
+<p>Let's draw the arcs using following code.</p>
+<p>One thing to take note, <code>chord.groups</code> is a function that returns the computed group objects, given the layout's current configuration and associated matrix. In this case, it will return the current market share of each brand.</p>
+<pre><code>var g = svg.selectAll("g.group")
+    .data(chord.groups)
+    .enter()
+        .append("svg:g")
+        .attr("class", function(d) {return "group " + NameProvider[d.index];});
+
+g.append("svg:path")
+      .attr("class", "arc")
+      .style("stroke", function(d) { return fill(d.index); })
+      .style("fill", function(d) { return fill(d.index); })
+      .attr("d", arc)
+
+</code></pre>
+<p>The arcs look like this:</p>
+<p><a href="https://camo.githubusercontent.com/7b70ad4cd380746c8e63a3bfab711a3ea122adb4/68747470733a2f2f6c68362e676f6f676c6575736572636f6e74656e742e636f6d2f2d7158356469574e514e6f672f5651473944356a643457492f41414141414141414153452f424e6c4d435a396443506b2f733530302f392e706e67" target="_blank"><img title="9.png" src="https://camo.githubusercontent.com/7b70ad4cd380746c8e63a3bfab711a3ea122adb4/68747470733a2f2f6c68362e676f6f676c6575736572636f6e74656e742e636f6d2f2d7158356469574e514e6f672f5651473944356a643457492f41414141414141414153452f424e6c4d435a396443506b2f733530302f392e706e67" alt="enter image description here" data-canonical-src="https://lh6.googleusercontent.com/-qX5diWNQNog/VQG9D5jd4WI/AAAAAAAAASE/BNlMCZ9dCPk/s500/9.png" /></a></p>
+<h4><a id="user-content-draw-chords" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#draw-chords"></a>Draw Chords</h4>
+<p>Drawing chords is no different from drawing arcs.</p>
+<pre><code>
+var chords = svg.selectAll("path.chord")
+    .data(chord.chords)
+    .enter()
+        .append("svg:path")
+        .attr("class", "chord")
+        .style("stroke", function(d) { return d3.rgb(fill(d.source.index)).darker(); })
+        .style("fill", function(d) { return fill(d.source.index); })
+        .attr("d", d3.svg.chord().radius(innerRadius))
+
+</code></pre>
+<p>At this point, you will be seeing a static chord diagram.</p>
+<p><a href="https://camo.githubusercontent.com/5d3d6207c41ca64b6cbb75c8f48787ed67f1f300/68747470733a2f2f6c68352e676f6f676c6575736572636f6e74656e742e636f6d2f2d58366d305f5236497339512f5651475f333755554130492f41414141414141414153632f4375566a6e4165554f30512f733530302f31302e706e67" target="_blank"><img title="10.png" src="https://camo.githubusercontent.com/5d3d6207c41ca64b6cbb75c8f48787ed67f1f300/68747470733a2f2f6c68352e676f6f676c6575736572636f6e74656e742e636f6d2f2d58366d305f5236497339512f5651475f333755554130492f41414141414141414153632f4375566a6e4165554f30512f733530302f31302e706e67" alt="enter image description here" data-canonical-src="https://lh5.googleusercontent.com/-X6m0_R6Is9Q/VQG_37UUA0I/AAAAAAAAASc/CuVjnAeUO0Q/s500/10.png" /></a></p>
+<h4><a id="user-content-adding-label-text-and-ticks" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#adding-label-text-and-ticks"></a>Adding Label text and Ticks</h4>
+<p>It is not nice to have a graph without label.</p>
+<p>To add brand names to the diagram, we need to append a text element after every arc. Each text element is created with certain degree of rotation and translation.</p>
+<pre><code>g.append("svg:text")
+  .each(function(d) { d.angle = (d.startAngle + d.endAngle) / 2; })
+  .attr("dy", ".35em")
+  .attr("class", "titles")
+  .attr("text-anchor", function(d) { return d.angle &gt; Math.PI ? "end" : null; })
+  .attr("transform", function(d) {
+        return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+        + "translate(" + (innerRadius + 55) + ")"
+        + (d.angle &gt; Math.PI ? "rotate(180)" : "");
+  })
+  .text(function(d,i) { return NameProvider[i]; });  
+
+</code></pre>
+<p>We also need to draw ticks around the arcs to show the scale of our data. A tick includes a text element, indicating the percentage value, and a few helping lines showing the intermediate value.</p>
+<pre><code>var ticks = svg.selectAll("g.group").append("svg:g")
+    .attr("class", function(d) {return "ticks " + NameProvider[d.index];})
+    .selectAll("g.ticks")
+    .attr("class", "ticks")
+    .data(groupTicks)
+    .enter().append("svg:g")
+    .attr("transform", function(d) {
+      return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+          + "translate(" + outerRadius+40 + ",0)";
+    });
+
+//  Append the tick around the arcs
+ticks.append("svg:line")
+    .attr("x1", 1)
+    .attr("y1", 0)
+    .attr("x2", 5)
+    .attr("y2", 0)
+    .attr("class", "ticks")
+    .style("stroke", "#AAA");
+
+//  Add the labels for the %'s
+ticks.append("svg:text")
+    .attr("x", 8)
+    .attr("dy", ".35em")
+    .attr("class", "tickLabels")
+    .attr("transform", function(d) { return d.angle &gt; Math.PI ? "rotate(180)translate(-16)" : null; })
+    .style("text-anchor", function(d) { return d.angle &gt; Math.PI ? "end" : null; })
+    .text(function(d) { return d.label; })
+    .attr('opacity', 1);
+
+//  Returns an array of tick angles and labels, given a group
+function groupTicks(d) {
+  var k = (d.endAngle - d.startAngle) / d.value;
+  return d3.range(0, d.value, 1).map(function(v, i) {
+    return {
+      angle: v * k + d.startAngle,
+      label: i % 5 ? null : v + "%"
+    };
+  });
+};//  groupTicks
+
+</code></pre>
+<p>You should be seeing labels and ticks like this:</p>
+<p><a href="https://camo.githubusercontent.com/efcf107a62805984d69855f232c29f7fc8c73855/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d747868505a6f34386a786b2f56514841465a48344d39492f41414141414141414153772f4c4b6d385561675f38756f2f733530302f31312e706e67" target="_blank"><img title="11.png" src="https://camo.githubusercontent.com/efcf107a62805984d69855f232c29f7fc8c73855/68747470733a2f2f6c68332e676f6f676c6575736572636f6e74656e742e636f6d2f2d747868505a6f34386a786b2f56514841465a48344d39492f41414141414141414153772f4c4b6d385561675f38756f2f733530302f31312e706e67" alt="enter image description here" data-canonical-src="https://lh3.googleusercontent.com/-txhPZo48jxk/VQHAFZH4M9I/AAAAAAAAASw/LKm8Uag_8uo/s500/11.png" /></a></p>
+<h4><a id="user-content-add-explaination-text-and-progress-bar" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#add-explaination-text-and-progress-bar"></a>Add Explaination Text and Progress Bar</h4>
+<p>We have drawn a nice chrod diagram. Let's take another step further to make the visualization more interactive.</p>
+<p>First of all, we can add some explaination text on top of the diagram. <code>wrap(text, width)</code> function will help us the wrap the text within a specific area.</p>
+<pre><code>
+//////////////////////////////////////////////////////////
+///////// Initialize Explaination Text  ////////////////////
+//////////////////////////////////////////////////////////
+
+// Create wrapper for center text
+var textCenter = svg.append("g")
+                    .attr("class", "explanationWrapper");
+
+// Starting text middle top
+var middleTextTop = textCenter.append("text")
+    .attr("class", "explanation")
+    .attr("text-anchor", "middle")
+    .attr("x", 0 + "px")
+    .attr("y", -24*10/2 + "px")
+    .attr("dy", "1em")
+    .attr("opacity", 1)
+    .text("For the Dutch version of the Deloitte Global Mobile Consumer Survey, Deloitte asked 2000 residents of the Netherlands about their mobile phone behavior")
+    .call(wrap, 350);
+
+// Starting text middle bottom
+var middleTextBottom = textCenter.append("text")
+    .attr("class", "explanation")
+    .attr("text-anchor", "middle")
+    .attr("x", 0 + "px")
+    .attr("y", 24*3/2 + "px")
+    .attr("dy", "1em")
+    .attr('opacity', 1)
+    .text("The respondents gave us information about the brand of their current main phone, and the brand of their previous main phone")
+    .call(wrap, 350);
+
+
+// Wraps SVG text
+function wrap(text, width) {
+    var text = d3.select(this)[0][0],
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.4, 
+        y = text.attr("y"),
+        x = text.attr("x"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em");
+
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() &gt; width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      };
+    };  
+};
+
+//////////////////////////////////////////////////////////
+///////////// Initialize Progress Bar //////////////////////
+//////////////////////////////////////////////////////////
+
+// Initialize variables for bar
+var progressColor = ["#D1D1D1","#949494"],
+    progressClass = ["prgsBehind","prgsFront"],
+    prgsWidth = 0.4*650,
+    prgsHeight = 3;
+
+// Create SVG to visualize bar in
+var progressBar = d3.select("#progress").append("svg")
+    .attr("width", prgsWidth)
+    .attr("height", 3*prgsHeight);
+
+// Create two bars of which one has a width of zero
+progressBar.selectAll("rect")
+    .data([prgsWidth, 0])
+    .enter()
+    .append("rect")
+    .attr("class", function(d,i) {return progressClass[i];})
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", function (d) {return d;})
+    .attr("height", prgsHeight)
+    .attr("fill", function(d,i) {return progressColor[i];});
+
+
+</code></pre>
+<p>To make the text more visible, you may want to modify the visibility of the other elements. eg. chords, ticks, etc.</p>
+<p>Let's hide chord, ticks and labels, and make the arcs semi-transparent.</p>
+<pre><code>g.append("svg:path")
+    ...
+    .style("opacity", 0.4);
+
+
+var chords = svg.selectAll("path.chord")
+    ...
+    .attr('opacity', 0);
+
+
+g.append("svg:text")
+    ...
+    .attr('opacity', 0)
+    .text(function(d,i) { return NameProvider[i]; });  
+
+// Append the tick around the arcs
+ticks.append("svg:line")
+    ...
+    .style("stroke", "#FFF");
+
+// Add the labels for the %'s
+ticks.append("svg:text")
+    ...
+    .attr('opacity', 0);
+
+
+</code></pre>
+<p>That's what you are going to see when you added in the code above.</p>
+<p><a href="https://camo.githubusercontent.com/1dd3c76838f8d64932536dd80bf9973c38a5570e/68747470733a2f2f6c68362e676f6f676c6575736572636f6e74656e742e636f6d2f2d69446a4b732d71775464342f565148427961595f4e49492f41414141414141414154492f4d5f7252743277715f4b772f733530302f31322e706e67" target="_blank"><img title="12.png" src="https://camo.githubusercontent.com/1dd3c76838f8d64932536dd80bf9973c38a5570e/68747470733a2f2f6c68362e676f6f676c6575736572636f6e74656e742e636f6d2f2d69446a4b732d71775464342f565148427961595f4e49492f41414141414141414154492f4d5f7252743277715f4b772f733530302f31322e706e67" alt="enter image description here" data-canonical-src="https://lh6.googleusercontent.com/-iDjKs-qwTd4/VQHByaY_NII/AAAAAAAAATI/M_rRt2wq_Kw/s500/12.png" /></a></p>
+<h4><a id="user-content-storyboarding" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#storyboarding"></a>Storyboarding</h4>
+<p>In this visualization, we will be having 16 scenes (including the first one). We need a few functions to handle the interaction.</p>
+<p>Let's define some important variables. <code>counter</code> stores the current scene index. <code>buttonTexts</code> stores all the texts on the button. As you can see, there are 15 entires in the <code>buttonTexts</code> array. This means that each scene will have a button. When the button is clicked, the visualization will proceed to next scene.</p>
+<p><code>opacityValueBase</code> defines an element's opacity value when it is active. <code>opacityValue</code> defines an element's opacity value when it is inactive.</p>
+<pre><code>
+var counter = 1,
+    buttonTexts = ["Ok","Go on","Continue","Okay","Go on","Continue","Okay","Continue",
+                   "Continue","Continue","Continue","Continue","Continue","Finish"],
+    opacityValueBase = 0.8,
+    opacityValue = 0.4;
+
+</code></pre>
+<p>We also need to bind actions with respective buttons. When <code>&lt;div id="reset"&gt;</code> button is clicked, the page will be reloaded. When <code>&lt;div id='skip'&gt;</code> button is clicked. We will jump to the final scene directly.</p>
+<p>Last but not the least, when <code>&lt;div id="clicker"&gt;</code> button is clicked, the visualization will proceed to the next scene and increase the <code>counter</code> by 1.</p>
+<pre><code>
+// Reload page
+d3.select("#reset")
+    .on("click", function(e) {location.reload();});
+
+// Skip to final visual right away
+d3.select("#skip")
+    .on("click", finalChord);
+
+// Order of steps when clicking button
+d3.select("#clicker")      
+    .on("click", function(e){
+
+        if(counter == 1) Draw1();
+        else if(counter == 2) Draw2();
+        else if(counter == 3) Draw3();
+        else if(counter == 4) Draw4();
+        else if(counter == 5) Draw5();
+        else if(counter == 6) Draw6();
+        else if(counter == 7) Draw7();
+        else if(counter == 8) Draw8();
+        else if(counter == 9) Draw9();
+        else if(counter == 10) Draw10();
+        else if(counter == 11) Draw11();
+        else if(counter == 12) Draw12();
+        else if(counter == 13) Draw13();
+        else if(counter == 14) Draw14();
+        else if(counter == 15) finalChord();
+
+        counter = counter + 1;
+    });
+
+function Draw1() {};
+function Draw2() {};
+function Draw3() {};
+function Draw4() {};
+function Draw5() {};
+function Draw6() {};
+function Draw7() {};
+function Draw8() {};
+function Draw9() {};
+function Draw10() {};
+function Draw11() {};
+function Draw12() {};
+function Draw13() {};
+function Draw14() {};
+function finalChord() {};
+
+</code></pre>
+<p>Before defining those draw functions, we will need some helper functions.</p>
+<p><code>fade(opacity)</code> fades the chord into certain opacity level. <code>endall(transition, callback)</code> will call the callback function when a transition ends. <code>changeTopText</code> and <code>changeBottonText</code> will update the content of the explaination text. <code>stopClicker</code> will disable the clicker button. <code>runProgressBar</code> will display a progress bar when animation is ongoing.</p>
+<pre><code>// Returns an event handler for fading a given chord group
+function fade(opacity) {
+  return function(d, i) {
+    svg.selectAll("path.chord")
+        .filter(function(d) { return d.source.index != i &amp;&amp; d.target.index != i; })
+        .transition()
+        .style("stroke-opacity", opacity)
+        .style("fill-opacity", opacity);
+  };
+}; // fade
+
+// Calls a function only after the total transition ends
+function endall(transition, callback) { 
+    var n = 0; 
+    transition 
+        .each(function() { ++n; }) 
+        .each("end", function() { if (!--n) callback.apply(this, arguments); }); 
+}; // endall
+
+
+// Transition the top circle text
+function changeTopText (newText, loc, delayDisappear, delayAppear, finalText, xloc, w) {
+
+    // If finalText is not provided, it is not the last text of the Draw step
+    if(typeof(finalText)==='undefined') finalText = false;
+
+    if(typeof(xloc)==='undefined') xloc = 0;
+    if(typeof(w)==='undefined') w = 350;
+
+    middleTextTop   
+        // Current text disappear
+        .transition().delay(700 * delayDisappear).duration(700)
+        .attr('opacity', 0) 
+        // New text appear
+        .call(endall,  function() {
+            middleTextTop.text(newText)
+            .attr("y", -24*loc + "px")
+            .attr("x", xloc + "px")
+            .call(wrap, w); 
+        })
+        .transition().delay(700 * delayAppear).duration(700)
+        .attr('opacity', 1)
+        .call(endall,  function() {
+            if (finalText == true) {
+                d3.select("#clicker")
+                    .text(buttonTexts[counter-2])
+                    .style("pointer-events", "auto")
+                    .transition().duration(400)
+                    .style("border-color", "#363636")
+                    .style("color", "#363636");
+                };
+        });
+};  // changeTopText
+
+// Transition the bottom circle text
+function changeBottomText (newText, loc, delayDisappear, delayAppear) {
+    middleTextBottom
+        // Current text disappear
+        .transition().delay(700 * delayDisappear).duration(700)
+        .attr('opacity', 0)
+        // New text appear
+        .call(endall,  function() {
+            middleTextBottom.text(newText)
+            .attr("y", 24*loc + "px")
+            .call(wrap, 350);   
+        })
+        .transition().delay(700 * delayAppear).duration(700)
+        .attr('opacity', 1);
+;}  // changeTopText
+
+// Stop clicker from working
+function stopClicker() {
+    d3.select("#clicker")
+        .style("pointer-events", "none")
+        .transition().duration(400)
+        .style("border-color", "#D3D3D3")
+        .style("color", "#D3D3D3");
+};//  stopClicker
+
+// Run the progress bar during an animation
+function runProgressBar(time) { 
+
+    // Make the progress div visible
+    d3.selectAll("#progress")
+        .style("visibility", "visible");
+
+    // Linearly increase the width of the bar
+    // After it is done, hide div again
+    d3.selectAll(".prgsFront")
+        .transition().duration(time).ease("linear")
+        .attr("width", prgsWidth)
+        .call(endall,  function() {
+            d3.selectAll("#progress")
+                .style("visibility", "hidden");
+        });
+
+    // Reset to zero width
+    d3.selectAll(".prgsFront")
+        .attr("width", 0);
+
+};  // runProgressBar
+
+</code></pre>
+<p>In the first scene, we will fade away the arc and update the explaination text.</p>
+<p><a href="https://camo.githubusercontent.com/8121d740c4e8dc0d308546f733e9b10e88f81c5a/68747470733a2f2f6c68362e676f6f676c6575736572636f6e74656e742e636f6d2f2d677a4e35754d58504454772f565148466c44366f4754492f41414141414141414154672f58726c4870352d674e7a732f733530302f31322e706e67" target="_blank"><img title="12.png" src="https://camo.githubusercontent.com/8121d740c4e8dc0d308546f733e9b10e88f81c5a/68747470733a2f2f6c68362e676f6f676c6575736572636f6e74656e742e636f6d2f2d677a4e35754d58504454772f565148466c44366f4754492f41414141414141414154672f58726c4870352d674e7a732f733530302f31322e706e67" alt="enter image description here" data-canonical-src="https://lh6.googleusercontent.com/-gzN5uMXPDTw/VQHFlD6oGTI/AAAAAAAAATg/XrlHp5-gNzs/s500/12.png" /></a></p>
+<p>At the end of scene 1, we can see that the text on the main button has been changed to "OK".</p>
+<p><a href="https://camo.githubusercontent.com/6b5b54e6cc5ec2a86777534552045278be348c3e/68747470733a2f2f6c68362e676f6f676c6575736572636f6e74656e742e636f6d2f2d304262515256644c3043672f5651484675783668425f492f41414141414141414154302f6566474432565f427274302f733530302f31332e706e67" target="_blank"><img title="13.png" src="https://camo.githubusercontent.com/6b5b54e6cc5ec2a86777534552045278be348c3e/68747470733a2f2f6c68362e676f6f676c6575736572636f6e74656e742e636f6d2f2d304262515256644c3043672f5651484675783668425f492f41414141414141414154302f6566474432565f427274302f733530302f31332e706e67" alt="enter image description here" data-canonical-src="https://lh6.googleusercontent.com/-0BbQRVdL0Cg/VQHFux6hB_I/AAAAAAAAAT0/efGD2V_Brt0/s500/13.png" /></a></p>
+<p>First of all, we will have to disable the click button and start the progress bar. This can be achieved by calling <code>stopClicker()</code> and <code>runProgressBar(time=700*11)</code>. <code>time</code> parameter in <code>runProgressBar</code> should be as same as the duration of the animation.</p>
+<p>To update the explaination text, we will need to call <code>changeTopText</code> and <code>changeBottomText</code></p>
+<p>To fade away the arcs, we modify their opacity to 0 and then remove them when the transition has ended.</p>
+<pre><code>function Draw1(){
+
+    // First disable click event on clicker button
+    stopClicker();
+
+    // Show and run the progressBar
+    runProgressBar(time=700*11);
+
+    changeTopText(newText = "These days most people switch phones every few years. " + 
+                            "Some people stay loyal, but many also switch to a different phone brand...",
+    loc = 4/2, delayDisappear = 0, delayAppear = 1);
+
+    changeTopText(newText = "In the next few steps I would like to introduce you to the flows of people between the phone brands ",
+    loc = 8/2, delayDisappear = 9, delayAppear = 10, finalText = true);
+
+    changeBottomText(newText = "Let's start by drawing out the division of the 1846 respondents, that have had at least 2 phones, among the biggest 7 brands ",
+    loc = 1/2, delayDisappear = 0, delayAppear = 10);
+
+    //  Remove arcs again
+    d3.selectAll(".arc")
+        .transition().delay(9*700).duration(2100)
+        .style("opacity", 0)
+        .each("end", function() {d3.selectAll(".arc").remove();});
+
+
+};  //  Draw1   
+
+
+
+</code></pre>
+<p>Other scenes can be implemented in similar way.</p>
+<pre><code>//////////////////////////////////////////////////////////
+//Introduction
+///////////////////////////////////////////////////////////
+function Draw1(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+
+    //  Show and run the progressBar
+    runProgressBar(time=700*11);
+
+    changeTopText(newText = "These days most people switch phones every few years. " + 
+                            "Some people stay loyal, but many also switch to a different phone brand...",
+    loc = 4/2, delayDisappear = 0, delayAppear = 1);
+
+    changeTopText(newText = "In the next few steps I would like to introduce you to the flows of people between the phone brands ",
+    loc = 8/2, delayDisappear = 9, delayAppear = 10, finalText = true);
+
+    changeBottomText(newText = "Let's start by drawing out the division of the 1846 respondents, that have had at least 2 phones, among the biggest 7 brands ",
+    loc = 1/2, delayDisappear = 0, delayAppear = 10);
+
+    //  Remove arcs again
+    d3.selectAll(".arc")
+        .transition().delay(9*700).duration(2100)
+        .style("opacity", 0)
+        .each("end", function() {d3.selectAll(".arc").remove();});
+
+};  //  Draw1
+
+//////////////////////////////////////////////////////////
+//Show Arc of Apple
+//////////////////////////////////////////////////////////
+function Draw2(){ 
+
+    //  First disable click event on clicker button
+    stopClicker();
+
+    //  Show and run the progressBar
+    runProgressBar(time=700*2);
+
+    //  Initialize all arcs but only show the Apple arc (d.index = 0)
+    g.append("svg:path")
+      .style("stroke", function(d) { return fill(d.index); })
+      .style("fill", function(d) { return fill(d.index); })
+      .transition().duration(700)
+      .attr("d", arc)
+      .attrTween("d", function(d) {
+        if(d.index == 0) {
+           var i = d3.interpolate(d.startAngle, d.endAngle);
+           return function(t) {
+               d.endAngle = i(t);
+             return arc(d);
+           }
+        }
+      });
+
+    //  Show the tick around the Apple arc
+    d3.selectAll("g.group").selectAll("line")
+        .transition().delay(700).duration(1000)
+        .style("stroke", function(d, i, j) {return j ? 0 : "#000"; });
+
+    //  Add the labels for the %'s at Apple
+    d3.selectAll("g.group").selectAll(".tickLabels")
+        .transition().delay(700).duration(2000)
+        .attr("opacity", function(d, i, j) {return j ? 0 : 1; });
+
+    //  Show the Apple name
+    d3.selectAll(".titles")
+      .transition().duration(2000)
+      .attr("opacity", function(d, i) {return d.index ? 0 : 1; });
+
+    //  Switch text
+    changeTopText(newText = "According to the survey 19% owns an iPhone as their main phone",
+    loc = 1/2, delayDisappear = 0, delayAppear = 1, finalText = true);
+
+    changeBottomText(newText = "",
+    loc = 0/2, delayDisappear = 0, delayAppear = 1) ;
+
+};  //  Draw2
+
+///////////////////////////////////////////////////////////  
+//Draw the other arcs as well
+//////////////////////////////////////////////////////////
+function Draw3(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+
+    var arcDelay = [0,1,2,12,13,23,33,34,35,40,47];
+    //  Show and run the progressBar
+    runProgressBar(time=700*(arcDelay[(arcDelay.length-1)]+1)); 
+
+   //   Fill in the other arcs
+   svg.selectAll("g.group").select("path")
+    .transition().delay(function(d, i) { return 700*arcDelay[i];}).duration(1000)
+    .attrTween("d", function(d) {
+        if(d.index != 0) {
+           var i = d3.interpolate(d.startAngle, d.endAngle);
+           return function(t) {
+               d.endAngle = i(t);
+             return arc(d);
+           }
+        }
+    });
+
+  //    Make the other strokes black as well
+  svg.selectAll("g.group")
+    .transition().delay(function(d,i) { return 700*arcDelay[i]; }).duration(700)
+    .selectAll("g").selectAll("line").style("stroke", "#000");
+
+  //    Same for the %'s
+  svg.selectAll("g.group")
+    .transition().delay(function(d,i) { return 700*arcDelay[i]; }).duration(700)
+    .selectAll("g").selectAll("text").style("opacity", 1);
+  //    And the Names of each Arc
+  svg.selectAll("g.group")
+    .transition().delay(function(d,i) { return 700*arcDelay[i]; }).duration(700)
+    .selectAll("text").style("opacity", 1);
+
+    //  Change the text of the top section inside the circle accordingly
+    //  HTC
+    changeTopText(newText = "HTC has 5% of the market share",
+        loc = 6/2, delayDisappear = 0, delayAppear = arcDelay[2]);
+    //  LG
+    changeTopText(newText = "LG has almost 5% of the market",
+        loc = 6/2, delayDisappear = arcDelay[3], delayAppear = arcDelay[4]);
+    //  Samsung
+    changeTopText(newText = "Samsung has the biggest share by far, with 38% of respondents using a Samsung as their main phone",
+        loc = 3/2, delayDisappear = (arcDelay[5]-1), delayAppear = arcDelay[5]);
+    //  Sony
+    changeTopText(newText = "Sony has slightly more than 4% share",
+        loc = 4/2, delayDisappear = arcDelay[6], delayAppear = (arcDelay[8]-1));        
+    //  100%
+    changeTopText(newText = "Together that sums up to 100%",
+        loc = 1/2, delayDisappear = (arcDelay[9]-1), delayAppear = arcDelay[9]);        
+    //  Chord intro
+    changeTopText(newText = "This circle shows how the respondents are currently divided between the brands",
+        loc = 8/2, delayDisappear = (arcDelay[10]-1), delayAppear = arcDelay[10], finalText = true);                    
+
+    //  Change the text of the bottom section inside the circle accordingly
+    //  Huawei
+    changeBottomText(newText = "Huawei came from practically no share in 2013 to 2.4% in 2014 thereby taking its place in the biggest 7 brands in the Netherlands",
+        loc = -2/2, delayDisappear = 0, delayAppear = arcDelay[2]);
+    //  Nokia
+    changeBottomText(newText = "Nokia is still owned by 15% of the respondents. However practically all of these phones are ordinary phones, not smartphones",
+        loc = -1/2, delayDisappear = arcDelay[3], delayAppear = arcDelay[4]);   
+    //  Other
+    changeBottomText(newText = "Brands combined in \"Other\" are Blackberry, Motorola, Google Nexus and Operator branded",
+        loc = -1/2, delayDisappear = (arcDelay[5]-1), delayAppear = (arcDelay[8]-1));   
+    //  Chord intro
+    changeBottomText(newText = "Now we're going to look at how these respondents flowed from their previous phone to their present one",
+        loc = 1/2, delayDisappear = (arcDelay[9]-1), delayAppear = arcDelay[10]);   
+
+};  //  Draw3
+
+///////////////////////////////////////////////////////////
+//Show the chord between Samsung and Nokia
+//////////////////////////////////////////////////////////
+function Draw4(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+    //  Show and run the progressBar
+    runProgressBar(time=700*2); 
+
+    //  Samsung and Nokia intro text
+    changeTopText(newText = "First, let's only look at the respondents that now own a Samsung, but whose previous phone was a Nokia and vice versa",
+        loc = 5, delayDisappear = 0, delayAppear = 1, finalText = true);
+
+    //  Bottom text disappear
+    changeBottomText(newText = "",
+        loc = 0, delayDisappear = 0, delayAppear = 1);  
+
+    //  Make the non Samsung &amp; Nokia arcs less visible
+    svg.selectAll("g.group").select("path")
+        .transition().duration(1000)
+        .style("opacity", function(d) {
+            if(d.index != 4 &amp;&amp; d.index != 5) {return opacityValue;}
+        });     
+
+    //  Make the other strokes less visible
+    d3.selectAll("g.group").selectAll("line")
+        .transition().duration(700)
+        .style("stroke",function(d,i,j) {if (j == 5 || j == 4) {return "#000";} else {return "#DBDBDB";}});
+    //  Same for the %'s
+    svg.selectAll("g.group")
+        .transition().duration(700)
+        .selectAll(".tickLabels").style("opacity",function(d,i,j) {if (j == 5 || j == 4) {return 1;} else {return opacityValue;}});
+    //  And the Names of each Arc
+    svg.selectAll("g.group")
+        .transition().duration(700)
+        .selectAll(".titles").style("opacity", function(d) { if(d.index == 4 || d.index == 5) {return 1;} else {return opacityValue;}});
+
+    //  Show only the Samsung Nokia chord
+    chords.transition().duration(2000)
+        .attr("opacity", function(d, i) { 
+            if(d.source.index == 5 &amp;&amp; d.target.index == 4) 
+                {return opacityValueBase;}
+            else {return 0;}
+        });
+
+};//  Draw4
+
+//////////////////////////////////////////////////////////////////////////
+function Draw5(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+    //  Show and run the progressBar
+    runProgressBar(time=700*2); 
+
+    //  Samsung and Nokia text
+    changeTopText(newText = "On the left, touching the arc of Samsung, we can see that the chord runs from 17% to almost 26%. Which is a thickness spanning 9%",
+        loc = 5, delayDisappear = 0, delayAppear = 1, finalText = true);
+
+    //  Make the non Samsung &amp; Nokia arcs less visible
+    svg.selectAll("g.group").select("path")
+        .transition().duration(1000)
+        .style("opacity", opacityValue);        
+
+    //  Show only the Samsung Nokia part at Samsung
+    var arcSamsung = d3.svg.arc()
+                .innerRadius(innerRadius)
+                .outerRadius(outerRadius)
+                .startAngle(4.040082626337902)
+                .endAngle(4.561777856121815);
+
+    svg.append("path")
+        .attr("class","SamsungToNokiaArc")
+        .attr("d", arcSamsung)
+        .attr("fill", colors[5])
+        .style('stroke', colors[5]);
+
+    repeat();
+
+    //  Repeatedly let an arc change colour
+    function repeat() {
+        d3.selectAll(".SamsungToNokiaArc")
+            .transition().duration(700)
+            .attr("fill", "#9FA6D0")
+            .style('stroke', "#9FA6D0")
+            .transition().duration(700)
+            .attr("fill", colors[5])
+            .style('stroke', colors[5])
+            .each("end", repeat)
+            ;
+    };
+
+};//  Draw5
+
+//////////////////////////////////////////////////////////////////////////
+function Draw6(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+    //  Show and run the progressBar
+    runProgressBar(time=700*2); 
+
+    //  Samsung and Nokia text
+    changeTopText(newText = "These 9% of the respondents now own a Samsung and by following the chord we can see what brand they used to own, which in this case, is Nokia",
+        loc = 5, delayDisappear = 0, delayAppear = 1, finalText = true);
+
+    //  Show only the Samsung Nokia part at Nokia
+    var arcNokia = d3.svg.arc()
+                .innerRadius(innerRadius)
+                .outerRadius(outerRadius)
+                .startAngle(2.837816067671451)
+                .endAngle(2.9104595910835127);
+
+    svg.append("path")
+        .attr("class","NokiaToSamsungArc")
+        .attr("d", arcNokia)
+        .attr("opacity", 0)
+        .attr("fill", colors[4])
+        .transition().duration(700)
+        .attr("opacity", 1)
+        .attr("stroke", colors[4]);             
+
+};//  Draw6
+
+//////////////////////////////////////////////////////////////////////////
+function Draw7(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+    //  Show and run the progressBar
+    runProgressBar(time=700*11);    
+
+    //  Samsung and Nokia text
+    changeTopText(newText = "At the Nokia side, the arc is much thinner, only spanning 1.2% (of respondents)",
+        loc = 4, delayDisappear = 0, delayAppear = 1);
+    changeTopText(newText = "These 1.2% now own a Nokia, but by following the chord we can see that they had a Samsung before",
+        loc = 4, delayDisappear = 9, delayAppear = 10, finalText = true);
+
+    //  Stop the color changing on the Samsung side
+    d3.selectAll(".SamsungToNokiaArc")
+        .transition().duration(700)
+        .attr("fill", colors[5])
+        .style("stroke", colors[5]);
+
+    //  Repeatedly let an arc change colour     
+    repeat();
+    function repeat() {
+        d3.selectAll(".NokiaToSamsungArc")
+            .transition().duration(700)
+            .attr("fill", "#99D2E9")
+            .style('stroke', "#99D2E9")
+            .transition().duration(700)
+            .attr("fill", colors[4])
+            .style("stroke", colors[4])
+            .each("end", repeat)
+            ;
+    };
+
+};//  Draw7
+
+//////////////////////////////////////////////////////////////////////////
+function Draw8(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+    //  Show and run the progressBar
+    runProgressBar(time=700*11);    
+
+    //  Samsung and Nokia text
+    changeTopText(newText = "Since the chord is much wider at the Samsung side, Samsung has taken a lot more clients from Nokia than Nokia managed to take from Samsung",
+        loc = 5, delayDisappear = 0, delayAppear = 1);
+    changeTopText(newText = "Therefore, the chord is the color of Samsung blue, since Samsung has the net gain from the exchange of people between Nokia and Samsung",
+        loc = 5, delayDisappear = 9, delayAppear = 10, finalText = true);
+
+    //  Stop the colour changing on the Nokia side
+    d3.selectAll(".NokiaToSamsungArc")
+        .transition().duration(700)
+        .attr("fill", colors[4])
+        .style("stroke", colors[4]);
+
+};//  Draw8
+
+/////////////////////////////////////////////////////////// 
+//Show Loyalty hills
+//////////////////////////////////////////////////////////
+function Draw9(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+    //  Show and run the progressBar
+    runProgressBar(time=700*20);    
+
+    //  Samsung Loyal text
+    changeTopText(newText = "There are also people that stay loyal and did not switch brands between their previous and current phone",
+        loc = 4/2, delayDisappear = 0, delayAppear = 1, finalText = false, xloc=-50, w=300);
+    changeTopText(newText = "These loyal respondents are represented by the hills at each brand",
+        loc = 3/2, delayDisappear = 9, delayAppear = 10, finalText = false, xloc=-50, w=300);
+    changeTopText(newText = "You can also envision this as a chord beginning and ending on itself",
+        loc = 2/2, delayDisappear = 18, delayAppear = 19, finalText = true, xloc=-50, w=300);
+
+    //  Remove the arcs
+    d3.selectAll(".NokiaToSamsungArc")
+        .transition().duration(2000)
+        .attr("opacity", 0)
+        .each("end", function() {d3.selectAll(".NokiaToSamsungArc").remove();});
+
+    d3.selectAll(".SamsungToNokiaArc")
+        .transition().duration(2000)
+        .attr("opacity", 0)
+        .each("end", function() {d3.selectAll(".SamsungToNokiaArc").remove();});
+
+    //  Show only the loyal chords
+    chords.transition().duration(2000)
+        .attr("opacity", function(d, i) { 
+            if(d.source.index == 0 &amp;&amp; d.target.index == 0) {return opacityValueBase;}
+            else if(d.source.index == 1 &amp;&amp; d.target.index == 1) {return opacityValueBase;}
+            else if(d.source.index == 2 &amp;&amp; d.target.index == 2) {return opacityValueBase;}
+            else if(d.source.index == 3 &amp;&amp; d.target.index == 3) {return opacityValueBase;}
+            else if(d.source.index == 4 &amp;&amp; d.target.index == 4) {return opacityValueBase;}
+            else if(d.source.index == 5 &amp;&amp; d.target.index == 5) {return opacityValueBase;}
+            else if(d.source.index == 6 &amp;&amp; d.target.index == 6) {return opacityValueBase;}
+            else if(d.source.index == 7 &amp;&amp; d.target.index == 7) {return opacityValueBase;}
+            else {return 0;}
+        });
+
+
+    //  Show all ticks and texts again
+    //  Ticks
+    d3.selectAll("g.group").selectAll("line")
+        .transition().duration(700)
+        .style("stroke", "#000");
+    //  Same for the %'s
+    svg.selectAll("g.group")
+        .transition().duration(700)
+        .selectAll(".tickLabels").style("opacity", 1);
+    //  And the Names of each Arc   
+    svg.selectAll("g.group")
+        .transition().duration(700)
+        .selectAll(".titles").style("opacity", 1);
+
+};//  Draw9
+
+//////////////////////////////////////////////////////////////////////////
+function Draw10(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+    //  Show and run the progressBar
+    runProgressBar(time=700*11);
+
+    changeTopText(newText = "10% of respondents have a Nokia right now, but also used to own a Nokia before that",
+        loc = 7/2, delayDisappear = 0, delayAppear = 1);
+        changeTopText(newText = "Seeing that currently Nokia is owned by almost 16% of respondents, this means "+ 
+                                "that about 2/3 of current Nokia owners are people who stayed loyal",
+        loc = 7/2, delayDisappear = 9, delayAppear = 10, finalText = true);
+
+    //  Show only the Nokia Loyal arc
+    var arcNokia = d3.svg.arc()
+                .innerRadius(innerRadius)
+                .outerRadius(outerRadius)
+                .startAngle(2.048671976860533)
+                .endAngle(2.6694216777820063);
+
+    svg.append("path")
+        .attr("class","NokiaLoyalArc")
+        .attr("d", arcNokia)
+        .attr("opacity", 1)
+        .attr("stroke", colors[4])
+        .attr("fill", colors[4]);   
+
+    //  Repeatedly let an arc change colour     
+    repeat();
+
+    function repeat() {
+        d3.selectAll(".NokiaLoyalArc")
+            .transition().duration(700)
+            .attr("fill", "#99D2E9")
+            .style('stroke', "#99D2E9")
+            .transition().duration(700)
+            .attr("fill", colors[4])
+            .style("stroke", colors[4])
+            .each("end", repeat);
+    };
+
+    //  Show only the Nokia loyal chord
+    chords.transition().duration(2000)
+        .attr("opacity", function(d, i) { 
+            if(d.source.index == 4 &amp;&amp; d.target.index == 4) {return opacityValueBase;}
+            else {return 0;}
+        });     
+
+    //  Make the other strokes less visible
+    d3.selectAll("g.group").selectAll("line")
+        .transition().duration(700)
+        .style("stroke",function(d,i,j) {if (j == 4) {return "#000";} else {return "#DBDBDB";}});
+    //  Same for the %'s
+    svg.selectAll("g.group")
+        .transition().duration(700)
+        .selectAll(".tickLabels").style("opacity",function(d,i,j) {if (j == 4) {return 1;} else {return opacityValue;}});
+    //  And the Names of each Arc   
+    svg.selectAll("g.group")
+        .transition().duration(700)
+        .selectAll(".titles").style("opacity", function(d) { if(d.index == 4) {return 1;} else {return opacityValue;}});
+
+};//  Draw10
+
+//////////////////////////////////////////////////////////
+//Show all chords that are connected to Apple
+//////////////////////////////////////////////////////////
+function Draw11(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+    //  Show and run the progressBar
+    runProgressBar(time=700*2); 
+
+    changeTopText(newText = "Here are all the chords for those respondents that currently own "+ 
+                            "an iPhone or that used to own an iPhone",
+        loc = 3/2, delayDisappear = 0, delayAppear = 1, finalText = true, xloc=-80, w=200);
+
+    //  Remove the Nokia arc
+    d3.selectAll(".NokiaLoyalArc")
+        .transition().duration(1000)
+        .attr("opacity", 0)
+        .each("end", function() {d3.selectAll(".NokiaLoyalArc").remove();});
+
+    //  Only show the chords of Apple
+    chords.transition().duration(2000)
+    .attr("opacity", function(d, i) { 
+        if(d.source.index == 0 || d.target.index == 0) {return opacityValueBase;}
+        else {return 0;}
+    });
+
+    //  Highlight arc of Apple
+    svg.selectAll("g.group").select("path")
+        .transition().duration(2000)
+        .style("opacity", function(d) {
+            if(d.index != 0) {return opacityValue;}
+        });
+
+    //  Show only the ticks and text at Apple
+    //  Make the other strokes less visible
+    d3.selectAll("g.group").selectAll("line")
+        .transition().duration(700)
+        .style("stroke",function(d,i,j) {if (j == 0) {return "#000";} else {return "#DBDBDB";}});
+    //  Same for the %'s
+    svg.selectAll("g.group")
+        .transition().duration(700)
+        .selectAll(".tickLabels").style("opacity",function(d,i,j) {if (j == 0) {return 1;} else {return opacityValue;}});
+    //  And the Names of each Arc   
+    svg.selectAll("g.group")
+        .transition().duration(700)
+        .selectAll(".titles").style("opacity", function(d) { if(d.index == 0) {return 1;} else {return opacityValue;}});
+
+};//  Draw11
+
+function Draw12(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+    //  Show and run the progressBar
+    runProgressBar(time=700*11);    
+
+    changeTopText(newText = "One thing that stands out for Apple is that all chords connected to " +
+                            "Apple are the color of the Apple arc: grey",
+        loc = 3/2, delayDisappear = 0, delayAppear = 1, finalText = false, xloc=-80, w=210);
+    changeTopText(newText = "This means that Apple has always had the net gain. " + 
+                            "They received more customers from other brands than they lost to them",
+        loc = 3/2, delayDisappear = 9, delayAppear = 10, finalText = true, xloc=-80, w=210);
+
+};//  Draw12
+
+
+function Draw13(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+    //  Show and run the progressBar
+    runProgressBar(time=700*11);    
+
+    changeTopText(newText = "Even more so, apart from the chord to Samsung, all other chords are extremely narrow at the other end from Apple",
+        loc = 3/2, delayDisappear = 0, delayAppear = 1, finalText = false, xloc=-80, w=200);
+    changeTopText(newText = "This means that Apple has lost virtually nobody to any other brand",
+        loc = 3/2, delayDisappear = 9, delayAppear = 10, finalText = true, xloc=-80, w=200);    
+
+    //  Repeatedly let specific chords change colour
+    repeat();
+
+    function repeat() {
+        chords
+            .transition().duration(1000)
+            .style("opacity",function (d){
+                if(d.source.index == 0) {
+                    if(d.target.index == 0 || d.target.index == 5) {return opacityValueBase;}
+                    else {return 0.2;}
+                } else {return 0;}
+            })
+            .transition().duration(1000)
+            .style("opacity",function (d){
+                if(d.source.index == 0) {return opacityValueBase;}
+                else {return 0;}
+            })
+            .each("end", repeat);
+    };  
+};//  Draw13
+
+
+function Draw14(){
+
+    //  First disable click event on clicker button
+    stopClicker();
+    //  Show and run the progressBar
+    //  runProgressBar(time=700*2);
+
+    changeTopText(newText = "Thank you for staying with me so far! After these examples I think you're absolutely " + 
+                            "ready to face the full impact of all chords simultaneously",
+        loc = 8/2, delayDisappear = 0, delayAppear = 1, finalText = true);
+
+    changeBottomText(newText = "I'm looking forward to hearing about the insights that you have discovered on your own",
+        loc = 3/2, delayDisappear = 0, delayAppear = 1);        
+
+    //  Only show the chords of Apple
+    chords.transition().duration(1000)
+        .style("opacity", 0.1);
+
+    //  Hide all the text
+    d3.selectAll("g.group").selectAll("line")
+        .transition().duration(700)
+        .style("stroke","#DBDBDB");
+    //  Same for the %'s
+    svg.selectAll("g.group")
+        .transition().duration(700)
+        .selectAll(".tickLabels").style("opacity",0.4);
+    //  And the Names of each Arc   
+    svg.selectAll("g.group")
+        .transition().duration(700)
+        .selectAll(".titles").style("opacity",0.4); 
+
+};//  Draw14
+
+///////////////////////////////////////////////////////////
+//Draw the original Chord diagram
+///////////////////////////////////////////////////////////
+//  Go to the final bit
+function finalChord() {
+
+    //  Remove button
+    d3.select("#clicker")
+        .style("visibility", "hidden");
+    d3.select("#skip")
+        .style("visibility", "hidden");
+    d3.select("#progress")
+        .style("visibility", "hidden");
+
+    //  Remove texts
+    changeTopText(newText = "",
+        loc = 0, delayDisappear = 0, delayAppear = 1);
+    changeBottomText(newText = "",
+        loc = 0, delayDisappear = 0, delayAppear = 1);          
+
+    //  Create arcs or show them, depending on the point in the visual
+    if (counter &lt;= 4 ) {
+        g.append("svg:path")
+          .style("stroke", function(d) { return fill(d.index); })
+          .style("fill", function(d) { return fill(d.index); })
+          .attr("d", arc)
+          .style("opacity", 0)
+          .transition().duration(1000)
+          .style("opacity", 1);
+
+    } else {
+         //  Make all arc visible
+        svg.selectAll("g.group").select("path")
+            .transition().duration(1000)
+            .style("opacity", 1);
+    };
+
+    //  Make mouse over and out possible
+    d3.selectAll(".group")
+        .on("mouseover", fade(.02))
+        .on("mouseout", fade(.80));
+
+    //  Show all chords
+    chords.transition().duration(1000)
+        .style("opacity", opacityValueBase);
+
+    //  Show all the text
+    d3.selectAll("g.group").selectAll("line")
+        .transition().duration(100)
+        .style("stroke","#000");
+    //  Same for the %'s
+    svg.selectAll("g.group")
+        .transition().duration(100)
+        .selectAll(".tickLabels").style("opacity",1);
+    //  And the Names of each Arc   
+    svg.selectAll("g.group")
+        .transition().duration(100)
+        .selectAll(".titles").style("opacity",1);       
+
+};//  finalChord
+
+</code></pre>
+<p>At this point, if you see something similar to the visualization in the link below:</p>
+<p><a href="http://bl.ocks.org/nbremer/raw/94db779237655907b907/">http://bl.ocks.org/nbremer/raw/94db779237655907b907/</a></p>
+<p>Congratulations, you have completed the last task!</p>
+<h2><a id="user-content-references-and-further-readings" class="anchor" href="file:///C:/Users/bimlesh/Dropbox/CS3219_Sem1_2016-17/CS3219_Assignments_Sem1_2016-17/Assignment%204/D3%20Lab/Lab%205/Lab%205.html#references-and-further-readings"></a>References and Further Readings</h2>
+<ul>
+<li>Vienno's D3.js Tutorial: <a href="https://www.youtube.com/user/d3Vienno">https://www.youtube.com/user/d3Vienno</a></li>
+<li>D3.js - Data Driven Docuements: <a href="http://d3js.org/">http://d3js.org/</a></li>
+<li>Interactive Data Visualization for the Web, Chapter 2: <a href="http://chimera.labs.oreilly.com/books/1230000000345/index.html">http://chimera.labs.oreilly.com/books/1230000000345/index.html</a></li>
+<li>Using Data Storytelling with Chord Diagram: <a href="http://www.visualcinnamon.com/2014/12/using-data-storytelling-with-chord.html">http://www.visualcinnamon.com/2014/12/using-data-storytelling-with-chord.html</a></li>
+</ul>
